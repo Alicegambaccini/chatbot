@@ -6,11 +6,11 @@ from tensorflow.keras.preprocessing.text import Tokenizer
 
 # Step 1: Preprocessing del Dataset
 
-# Carica il dataset
+# Caricare il dataset
 with open('data/dataset.txt', 'r', encoding='utf-8') as file:
-    lines = file.readlines()  # Leggi tutte le linee del file e memorizzale in una lista
+    lines = file.readlines()  # Leggere tutte le linee del file e memorizzale in una lista
 
-# Prepara le coppie domanda-risposta
+# Preparare le coppie domanda-risposta
 pairs = []
 for i in range(0, len(lines), 2):  # Itera ogni due linee
     question = lines[i].strip().lower()  # Rimuove spazi bianchi e converte in minuscolo la domanda
@@ -27,7 +27,7 @@ answers = []
 for pair in pairs:
     answers.append(pair[1])  # Estrae tutte le risposte dalle coppie
 
-# Converte il testo in sequenze di numeri
+# Convertire il testo in sequenze di numeri
 tokenizer = Tokenizer()
 
 # La funzione fit_on_texts è un metodo della classe Tokenizer di Keras, 
@@ -51,7 +51,7 @@ tokenizer.fit_on_texts(questions + answers)  # Costruisce il vocabolario basato 
 question_sequences = tokenizer.texts_to_sequences(questions) # Converte il testo in sequenze di numeri
 answer_sequences = tokenizer.texts_to_sequences(answers)
 
-# Aggiungi un token di inizio e di fine alle risposte
+# Aggiungere un token di inizio e di fine alle risposte
 start_token = len(tokenizer.word_index) + 1  # Definisce il token di inizio come il prossimo indice disponibile
 end_token = len(tokenizer.word_index) + 2  # Definisce il token di fine come il successivo indice disponibile
 tokenizer.word_index['<start>'] = start_token  # Aggiunge '<start>' al vocabolario
@@ -128,7 +128,7 @@ encoder_inputs = Input(shape=(max_length_questions,))  # Input del encoder con l
 
 # Strato di embedding per convertire gli indici in vettori
 # Word2Vec
-# Come funziona Word2Vec?
+# Come funziona Word2Vec:
     # Word2Vec può essere addestrato in due modi principali:
         # CBOW (Continuous Bag of Words): Questo approccio predice una parola target basandosi sul contesto circostante (cioè le parole vicine).
         # Skip-gram: Questo modello, al contrario, cerca di predire le parole di contesto a partire dalla parola target.
@@ -178,11 +178,11 @@ decoder_dense = Dense(vocab_size, activation='softmax')  # Strato denso finale c
 # per ogni timestep della sequenza di output.
 decoder_outputs = decoder_dense(decoder_outputs)  # Calcola le uscite finali del decoder
 
-# Definisci il modello
+# Definire il modello
 # questa linea di codice combina l'encoder e il decoder in un singolo modello di rete neurale
 model = Model([encoder_inputs, decoder_inputs], decoder_outputs)
 
-# Compila il modello
+# Compilare il modello
 # Questa funzione configura il processo di apprendimento del modello. 
 # Definisce come il modello verrà addestrato.
 
@@ -211,7 +211,7 @@ decoder_input_data = answer_sequences[:, :-1]
 
 # Obiettivo: Creare le sequenze di output target per il decoder.
 # seleziona tutte le colonne a partire dalla seconda (indice 1)
-# In pratica, questa operazione rimuove il primo token da ogni sequenza di risposta. Ecco perché:
+# In pratica, questa operazione rimuove il primo token da ogni sequenza di risposta. Perché:
 # Il target del decoder in ogni timestep dovrebbe essere il token successivo rispetto all'input.
 # Rimuovendo il primo token (che è sempre <start>), creiamo la sequenza target corretta per il decoder.
 decoder_target_data = answer_sequences[:, 1:]
