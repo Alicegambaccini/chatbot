@@ -5,7 +5,7 @@ from tensorflow.keras.layers import Input
 from tensorflow.keras.models import Model, load_model
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 
-# Carica il modello e il tokenizer
+# Caricare il modello e il tokenizer
 model = load_model('chatbot_model.h5')
 with open('tokenizer.pkl', 'rb') as f:
     tokenizer = pickle.load(f)
@@ -23,7 +23,7 @@ max_length_answers = config['max_length_answers']
 # Nel caso di un chatbot, questo significa generare risposte basate sugli input dell'utente. 
 
 # Modello Encoder per l'Inference
-# Prima, dobbiamo creare il modello encoder per l'inference. 
+# Prima, è necessario creare il modello encoder per l'inference. 
 # Questo modello prenderà come input una sequenza di parole (una frase) 
 # e produrrà gli stati interni del LSTM, che saranno utilizzati come input iniziali per il decoder.
 encoder_inputs = model.input[0]  # Input del encoder
@@ -32,7 +32,7 @@ encoder_states = [state_h_enc, state_c_enc]
 encoder_model = Model(encoder_inputs, encoder_states)  # Crea il modello encoder con gli stati
 
 # Modello decoder per l'inference
-# Ora, creiamo il modello decoder per l'inference. 
+# Ora, creare il modello decoder per l'inference. 
 # Questo modello genererà la risposta una parola alla volta, utilizzando i seguenti passaggi:
 # Inputs per gli Stati del Decoder: Iniziamo con gli stati generati dall'encoder.
 decoder_inputs = model.input[1]  # Input del decoder
@@ -51,7 +51,7 @@ decoder_states = [state_h, state_c]  # Stati aggiornati del decoder
 decoder_dense = model.layers[6]
 decoder_outputs = decoder_dense(decoder_outputs)
 
-# Crea il modello decoder con uscite e stati
+# Creare il modello decoder con uscite e stati
 decoder_model = Model(
     [decoder_inputs] + decoder_states_inputs,
     [decoder_outputs] + decoder_states)  # Crea il modello decoder con uscite e stati
@@ -104,7 +104,7 @@ def decode_sequence(input_sentence):
         else:
             # 7. Aggiunta della parola alla risposta e aggiornamento della sequenza target
 
-            # Altrimenti, aggiungi la parola alla frase decodificata
+            # Altrimenti, aggiungere la parola alla frase decodificata
             decoded_sentence += ' ' + sampled_word
 
             # Aggiorna la sequenza target (di lunghezza 1)
